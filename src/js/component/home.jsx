@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 // import Todos from "../view/Todos.jsx";
-import Fetch from "./Fetch.jsx";
+// import Fetc from "./Fetch.jsx";
 
 //include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
 
+const urlBase = "https://assets.breatheco.de/apis/fake/todos/user/john"
 
 
 //create your first component
@@ -17,20 +17,7 @@ const Home = () => {
 		}
 	);
 
-	const [allTask, setAllTask] = useState([
-		{
-			label: "Comprar Pan",
-			done: false,
-		},
-		{
-			label: "Comprar Verduras",
-			done: false,
-		},
-		{
-			label: "Comprar Perrarina",
-			done: false,
-		},
-	]);
+	const [allTask, setAllTask] = useState([]);
 
 	const handleTask = (event) => {
 		
@@ -42,24 +29,57 @@ const Home = () => {
 
 	};
 
-	const addTask = (event) => {
+	const addTask = async (event) => {
 		
 		if (event.key == "Enter") {
-			setAllTask([
+			const newTasks = [
 				task, ...allTask
-			])
+			]
+			const response = await fetch(urlBase, {
+				method: 'PUT',
+				body: JSON.stringify(newTasks),
+				headers: {
+					"Content-Type": "application/json",
+				  },
+			})
+			console.log(newTasks)
+			if (response.ok){
+				fetchTodos()
+			}
 		}
 	} 
 
-	const delTask = (id) => {
+	const delTask = async (id) => {
 		console.log(id)
 		const filterTask = allTask.filter((item, index) => index != id)
-		console.log(filterTask)
-		setAllTask(
-			filterTask
-		)
+		const response = await fetch(urlBase, {
+			method: 'PUT',
+			body: JSON.stringify(filterTask),
+			headers: {
+				"Content-Type": "application/json",
+			  },
+		})
+		if (response.ok){
+			fetchTodos()
+		}
 
 	}
+
+	async function fetchTodos(){
+		console.log("Load the Tasks");
+		const response = await fetch(urlBase)
+		console.log(response)
+		if (response.ok){
+			const data = await response.json()
+			console.log(data)
+			setAllTask(data)
+		}
+		
+	}
+
+	useEffect( () => {
+		fetchTodos()
+	},[])
 
 	return (
 		<div className="container">
