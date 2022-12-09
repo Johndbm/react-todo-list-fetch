@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 // import Todos from "../view/Todos.jsx";
-
+import Fetch from "./Fetch.jsx";
 
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
